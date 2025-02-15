@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIDEA - AI Idea Evaluator</title>
+    <style>
+        /* General styles */
+        body {
+            background-color: #f8f0ff; /* White background */
+            color: #9b4fd6; /* Violet text color */
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            overflow: auto;
+        }
+
+        h1, h2 {
+            font-size: 4em;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #9b4fd6; /* Violet title */
+            text-shadow: 2px 2px 15px rgba(155, 79, 214, 1); /* More vivid text-shadow */
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: #9b4fd6;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        a:hover {
+            color: #ff6600;
+        }
+
+        /* Navbar */
+        .navbar {
+            padding: 10px;
+            background-color: #f8f0ff;
+            text-align: left;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1;
+        }
+
+        .navbar a {
+            padding: 15px;
+            font-size: 18px;
+        }
+
+        .navbar img {
+            width: 30px;
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+
+        /* Textarea and button */
+        .textarea-container {
+            margin-top: 30px;
+        }
+
+        textarea {
+            width: 80%;
+            height: 100px;
+            background-color: #f8f0ff;
+            color: #9b4fd6; /* Violet text */
+            border: 1px solid #8c2ad6; /* Violet border */
+            font-size: 18px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #f8f0ff;
+            color: #9b4fd6;
+            border: 1px solid #9b4fd6;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #ffffff;
+            color: #9b4fd6;
+        }
+
+        /* Roadmap */
+        .roadmap {
+            list-style-type: none;
+            padding: 0;
+            font-size: 18px;
+            color: #9b4fd6; /* Violet text */
+            margin-top: 50px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap; /* Allows the roadmap to break into multiple rows */
+            transition: all 0.3s ease;
+        }
+
+        .roadmap li {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: #ffffff; /* Set background color to white */
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #9b4fd6; /* Violet border */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for clarity */
+            width: 45%; /* Set width for two columns */
+        }
+
+        .roadmap li:hover {
+            transform: scale(1.05);
+            background-color: #9b4fd6; /* Violet background on hover */
+            color: #ffffff; /* White text on hover */
+            box-shadow: 0 0 25px rgba(155, 79, 214, 1); /* Violet glowing effect */
+            animation: glow 1s infinite; /* Add glow effect */
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 15px rgba(155, 79, 214, 0.8); }
+            50% { box-shadow: 0 0 30px rgba(155, 79, 214, 1); }
+            100% { box-shadow: 0 0 15px rgba(155, 79, 214, 0.8); }
+        }
+
+        .roadmap li::before {
+            content: "";
+            width: 20px;
+            height: 20px;
+            background-color: #9b4fd6; /* Violet color for the circle */
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        .roadmap li span {
+            position: relative;
+            padding-left: 40px;
+            padding-right: 10px;
+        }
+
+        .roadmap li span::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 2px;
+            height: 30px;
+            background-color: #9b4fd6; /* Violet color for the line */
+            transform: translateX(-50%);
+            display: none; /* Removed vertical line */
+        }
+
+        .roadmap li:last-child span::after {
+            display: none;
+        }
+
+        .roadmap-description {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #8d2bd8cc;
+            color: #f8f0ff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px #9b4fd6cc;
+            width: 200px;
+            font-size: 14px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .roadmap li:hover .roadmap-description {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Docs section */
+        .docs-container {
+            margin-top: 50px;
+            background-color: #ffffff; /* White background */
+            padding: 30px;
+            border: 2px solid #9b4fd6; /* Violet border */
+            box-shadow: 0 0 25px #9b4fd6; /* Violet glowing effect */
+            border-radius: 10px;
+            font-size: 16px;
+            color: #9b4fd6; /* Text color adjusted for readability */
+            transition: box-shadow 0.3s ease;
+        }
+
+        .docs-container:hover {
+            box-shadow: 0 0 30px rgba(155, 79, 214, 1); /* Violet glowing effect on hover */
+        }
+
+        .docs-container h3 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #9b4fd6;
+        }
+
+        .docs-container p {
+            font-size: 18px;
+            color: #9b4fd6;
+            line-height: 1.5;
+        }
+
+        .docs-container ul {
+            font-size: 16px;
+            color: #8331c2;
+            margin-top: 20px;
+            list-style: disc;
+            margin-left: 40px;
+        }
+
+        /* Result container */
+        #result {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f8f0ff;
+            box-shadow: 0 0 15px #9b4fd6; /* Violet glowing effect */
+            display: none;
+            color: #9b4fd6;
+        }
+
+        .score-box {
+            font-size: 18px;
+            margin-top: 20px;
+            color: #9b4fd6;
+        }
+
+        /* Responsiveness for mobile */
+        @media (max-width: 768px) {
+            .roadmap li {
+                width: 90%; /* Set to take more width on smaller screens */
+            }
+        }
+
+        /* Error and success messages */
+        .error-message {
+            color: red;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="https://twitter.com/"><img src="https://upload.wikimedia.org/wikipedia/commons/6/60/Twitter_Logo_2021.svg" alt="Twitter"></a>
+        <a href="https://dexscreener.com/"><img src="https://www.dexscreener.com/favicon.ico" alt="Dex Screener"></a>
+    </div>
+
+    <h1>AIDEA - AI-Powered Idea Evaluator</h1>
+    <p>Enter your startup idea below and get an AI evaluation!</p>
+
+    <div class="textarea-container">
+        <textarea id="ideaInput" placeholder="Write your idea here..."></textarea>
+    </div>
+
+    <div class="button-container">
+        <button onclick="sendIdea()">Evaluate Idea</button>
+    </div>
+
+    <div id="result" class="result-container"></div>
+
+    <div id="error-message" class="error-message" style="display:none;">Please enter a valid idea!</div>
+    <div id="success-message" class="success-message" style="display:none;">Your idea is being evaluated!</div>
+
+    <h2>Project Roadmap</h2>
+    <ul class="roadmap">
+        <li>
+            <span><strong>Phase 1:</strong> Idea conceptualization and planning.</span>
+            <div class="roadmap-description">Define the core idea and plan the next steps.</div>
+        </li>
+        <li>
+            <span><strong>Phase 2:</strong> Development and testing of the evaluation system.</span>
+            <div class="roadmap-description">Create the platform and test the AI evaluation system.</div>
+        </li>
+        <li>
+            <span><strong>Phase 3:</strong> Launch of the platform for public use.</span>
+            <div class="roadmap-description">Make the platform available to the public.</div>
+        </li>
+        <li>
+            <span><strong>Phase 4:</strong> Implementation of monetization system and marketing.</span>
+            <div class="roadmap-description">Introduce monetization features and marketing strategies.</div>
+        </li>
+        <li>
+            <span><strong>Phase 5:</strong> Full automation and scalability.</span>
+            <div class="roadmap-description">Scale up the system for large-scale use and automate key processes.</div>
+        </li>
+    </ul>
+
+    <div class="docs-container">
+        <h3>Docs</h3>
+        <p>This project leverages artificial intelligence to evaluate startup ideas, providing detailed feedback and a roadmap for development. The evaluation system is designed to offer insights into feasibility, market demand, and potential growth. The roadmap outlines the key phases in turning an idea into a successful product. For more information, please contact us.</p>
+        <ul>
+            <li><strong>Objective:</strong> Provide AI-driven evaluations for startup ideas.</li>
+            <li><strong>Target Audience:</strong> Entrepreneurs and innovators looking for guidance.</li>
+            <li><strong>AI Features:</strong> Evaluation on feasibility, market demand, and growth potential.</li>
+            <li><strong>Technology Stack:</strong> AI algorithms, cloud computing, and real-time data analytics.</li>
+        </ul>
+    </div>
+
+    <script>
+        let ideaAlreadyEvaluated = false;
+
+        function sendIdea() {
+            let idea = document.getElementById("ideaInput").value;
+            if (idea.trim() === "") {
+                document.getElementById("error-message").style.display = "block";
+                document.getElementById("success-message").style.display = "none";
+                return;
+            } else {
+                document.getElementById("error-message").style.display = "none";
+                document.getElementById("success-message").style.display = "block";
+            }
+
+            if (ideaAlreadyEvaluated) {
+                return; // Preventing result changes if the idea is the same and already evaluated
+            }
+
+            ideaAlreadyEvaluated = true;
+
+            fetch("/evaluate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ idea: idea })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let resultHtml = `<h3>Evaluation:</h3><p>${data.evaluation}</p>`;
+                resultHtml += `<h4>Final Score: ${data.final_score.toFixed(2)}%</h4>`;
+
+                // Separate detailed evaluation into paragraphs
+                let detailedEvaluation = `<h4>Detailed Evaluation:</h4>`;
+                for (let aspect in data.detailed_evaluation) {
+                    detailedEvaluation += `<p><strong>${aspect}:</strong> ${data.detailed_evaluation[aspect]}%</p>`;
+                }
+                document.getElementById("result").innerHTML = resultHtml + detailedEvaluation;
+                document.getElementById("result").style.display = "block"; 
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            })
+            .finally(() => {
+                ideaAlreadyEvaluated = false; // Reset after the result has been displayed
+            });
+        }
+    </script>
+</body>
+</html>
